@@ -7,12 +7,12 @@
 
 import Foundation
 import Combine
-import ImagesLoaderSandbox
+import ImagesLoader
 import UIKit
 
 final class LoaderVC: UIViewController {
     private var disposableBag = Set<AnyCancellable>()
-    private let loader = SyncImagesLoader()
+    private let loader = SyncImagesLoader(session: URLSession.shared)
     private let images = [
         CacheImageSyncRequest(key: UUID().uuidString, url: URL(string: "https://wallpaperaccess.com/full/1369012.jpg")!),
         CacheImageSyncRequest(key: UUID().uuidString, url: URL(string: "http://eskipaper.com/images/large-2.jpg")!),
@@ -695,13 +695,23 @@ final class LoaderVC: UIViewController {
         return button
     }()
 
+    lazy var unsafeGreedyDispatchGroupLoadButton: UIButton = {
+
+        let button = UIButton(configuration: .filled())
+        button.setTitle("Old-school greedy load", for: .normal)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.widthAnchor.constraint(equalToConstant: 200).isActive = true
+        button.heightAnchor.constraint(equalToConstant: 40).isActive = true
+        return button
+    }()
+
     lazy var label: UILabel = {
 
         let button = UILabel(frame: .zero)
         self.view.addSubview(button)
         button.textAlignment = .center
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.widthAnchor.constraint(equalToConstant: 300).isActive = true
+        button.widthAnchor.constraint(equalTo: self.view.widthAnchor).isActive = true
         button.heightAnchor.constraint(equalToConstant: 100).isActive = true
         button.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         button.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
@@ -709,7 +719,14 @@ final class LoaderVC: UIViewController {
     }()
 
     lazy var stack: UIStackView = {
-        let stack = UIStackView(arrangedSubviews: [self.combineLoadButton, self.asyncAwaitLoadButton, self.unsafeDispatchGroupLoadButton])
+        let stack = UIStackView(
+            arrangedSubviews: [
+                self.combineLoadButton,
+                self.asyncAwaitLoadButton,
+                self.unsafeDispatchGroupLoadButton,
+                self.unsafeGreedyDispatchGroupLoadButton
+            ]
+        )
         stack.axis = .vertical
         stack.spacing = 10
         stack.translatesAutoresizingMaskIntoConstraints = false
@@ -724,7 +741,8 @@ final class LoaderVC: UIViewController {
         label.text = "Loading status."
         combineLoadButton.addTarget(self, action: #selector(self.combineLoad), for: .touchUpInside)
         asyncAwaitLoadButton.addTarget(self, action: #selector(self.asyncAwaitLoad), for: .touchUpInside)
-        unsafeDispatchGroupLoadButton.addTarget(self, action: #selector(self.didTap), for: .touchUpInside)
+        unsafeDispatchGroupLoadButton.addTarget(self, action: #selector(self.oldschoolLoad), for: .touchUpInside)
+        unsafeGreedyDispatchGroupLoadButton.addTarget(self, action: #selector(self.noAutoreleasepoolLoad), for: .touchUpInside)
         view.addSubview(stack)
         stack.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
         stack.centerYAnchor.constraint(equalTo: self.view.centerYAnchor).isActive = true
@@ -740,7 +758,9 @@ final class LoaderVC: UIViewController {
     @objc
     private func combineLoad() {
         loader.progressCallback = { [weak self] current, total in
-            self?.label.text = "Loading \(current) of \(total)"
+            DispatchQueue.main.async {
+                self?.label.text = "Loading \(current) of \(total)"
+            }
         }
         loader.cacheFunction = { image, key in
             print("cache \(image) with \(key)")
@@ -749,9 +769,11 @@ final class LoaderVC: UIViewController {
             .fetchImages(resources: images)
             .sink(receiveCompletion: { [weak self] _ in
                 print("It's over")
-                self?.label.text = "It's over"
+                DispatchQueue.main.async {
+                    self?.label.text = "Combine load is over"
+                }
             }, receiveValue: { result in
-                print("sink --> \(result)")
+                print("sink --> \(String(describing: result))")
             })
             .store(in: &disposableBag)
     }
@@ -767,12 +789,12 @@ final class LoaderVC: UIViewController {
                 print("\(current) of \(total) cache \(String(describing: image)) with \(resource.key)")
                 current += 1
             }
-            self.label.text = "It's over"
+            self.label.text = "Async await load is over"
         }
     }
 
     @objc
-    private func didTap() {
+    private func oldschoolLoad() {
         DispatchQueue(label: "Images loader").async {
             let total = self.images.count
             var current = 1
@@ -787,7 +809,27 @@ final class LoaderVC: UIViewController {
                     current += 1
                 }
                 DispatchQueue.main.async {
-                    self.label.text = "It's over"
+                    self.label.text = "Oldschool with autoreleasepool load is over"
+                }
+            }
+        }
+    }
+
+    @objc
+    private func noAutoreleasepoolLoad() {
+        DispatchQueue(label: "Images loader").async {
+            let total = self.images.count
+            var current = 1
+            for resource in self.images {
+                DispatchQueue.main.async {
+                    self.label.text = "Loading \(current) of \(total)"
+                }
+
+                let image = self.loader.unsafeLoadImage(resource: resource)
+                print("\(current) of \(total) cache \(String(describing: image)) with \(resource.key)")
+                current += 1
+                DispatchQueue.main.async {
+                    self.label.text = "No autoreleasepool load is over"
                 }
             }
         }
@@ -795,7 +837,7 @@ final class LoaderVC: UIViewController {
 
     private func getImage(resource: CacheImageSyncRequest) async -> UIImage? {
         await Task {
-            try? await loader.loadImage(resource: resource)
+            try? await loader.fetchImage(resource: resource)?.image
         }.value
     }
 }

@@ -13,7 +13,7 @@
 		3991AE1B2759152100CACDBD /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3991AE192759152100CACDBD /* Main.storyboard */; };
 		3991AE1D2759152100CACDBD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3991AE1C2759152100CACDBD /* Assets.xcassets */; };
 		3991AE202759152100CACDBD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3991AE1E2759152100CACDBD /* LaunchScreen.storyboard */; };
-		3991AE2A2759176C00CACDBD /* ImagesLoaderSandbox in Frameworks */ = {isa = PBXBuildFile; productRef = 3991AE292759176C00CACDBD /* ImagesLoaderSandbox */; };
+		39E58E46275A1FDA00F1C523 /* ImagesLoader in Frameworks */ = {isa = PBXBuildFile; productRef = 39E58E45275A1FDA00F1C523 /* ImagesLoader */; };
 		39F50D9A275A178900D38E87 /* LoaderVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F50D99275A178900D38E87 /* LoaderVC.swift */; };
 /* End PBXBuildFile section */
 
@@ -26,7 +26,7 @@
 		3991AE1C2759152100CACDBD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3991AE1F2759152100CACDBD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3991AE212759152100CACDBD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		3991AE272759153600CACDBD /* ImagesLoaderSandbox */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ImagesLoaderSandbox; path = ../ImagesLoaderSandbox; sourceTree = "<group>"; };
+		39E58E44275A1FCE00F1C523 /* ImagesLoader */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ImagesLoader; path = ../ImagesLoader; sourceTree = "<group>"; };
 		39F50D99275A178900D38E87 /* LoaderVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoaderVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -35,7 +35,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3991AE2A2759176C00CACDBD /* ImagesLoaderSandbox in Frameworks */,
+				39E58E46275A1FDA00F1C523 /* ImagesLoader in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -45,7 +45,7 @@
 		3991AE072759152100CACDBD = {
 			isa = PBXGroup;
 			children = (
-				3991AE272759153600CACDBD /* ImagesLoaderSandbox */,
+				39E58E44275A1FCE00F1C523 /* ImagesLoader */,
 				3991AE122759152100CACDBD /* LoaderSandbox */,
 				3991AE112759152100CACDBD /* Products */,
 				3991AE282759176C00CACDBD /* Frameworks */,
@@ -99,7 +99,7 @@
 			);
 			name = LoaderSandbox;
 			packageProductDependencies = (
-				3991AE292759176C00CACDBD /* ImagesLoaderSandbox */,
+				39E58E45275A1FDA00F1C523 /* ImagesLoader */,
 			);
 			productName = LoaderSandbox;
 			productReference = 3991AE102759152100CACDBD /* LoaderSandbox.app */;
@@ -381,9 +381,9 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		3991AE292759176C00CACDBD /* ImagesLoaderSandbox */ = {
+		39E58E45275A1FDA00F1C523 /* ImagesLoader */ = {
 			isa = XCSwiftPackageProductDependency;
-			productName = ImagesLoaderSandbox;
+			productName = ImagesLoader;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
