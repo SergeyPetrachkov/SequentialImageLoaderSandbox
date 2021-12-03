@@ -1,6 +1,6 @@
 # SequentialImageLoaderSandbox
 
-This is a demo project for an article.
+This is a demo project for this [article](https://medium.com/@petrachkovsergey/images-loader-and-memory-footprint-e8142ffebf0f).
 
 You can find different approaches to load images. The core is ImagesLoader swift package. To run and play with it you can go and open LoaderSandbox/LoaderSandbox.xcodeproj. 
 
