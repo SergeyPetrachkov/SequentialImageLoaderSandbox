@@ -785,7 +785,7 @@ final class LoaderVC: UIViewController {
             var current = 1
             for resource in images {
                 self.label.text = "Loading \(current) of \(total)"
-                let image = await getImage(resource: resource)
+                let image = try? await loader.fetchImage(resource: resource)?.image
                 print("\(current) of \(total) cache \(String(describing: image)) with \(resource.key)")
                 current += 1
             }
@@ -833,12 +833,6 @@ final class LoaderVC: UIViewController {
                 }
             }
         }
-    }
-
-    private func getImage(resource: CacheImageSyncRequest) async -> UIImage? {
-        await Task {
-            try? await loader.fetchImage(resource: resource)?.image
-        }.value
     }
 }
 
