@@ -28,7 +28,7 @@ public struct CacheImageSyncResponse: Equatable, Hashable {
 @available(iOS 13.0, *)
 public final class SyncImagesLoader {
 
-    public var progressCallback: ((_ progress: Double, _ iterator: Int, _ total: Int) -> Void)?
+    public var progressCallback: ((_ iterator: Int, _ total: Int) -> Void)?
     public var cacheFunction: ((UIImage, String) -> Void)?
     var iterator: Int = 0
     var total: Int = 0
@@ -46,12 +46,6 @@ public final class SyncImagesLoader {
         request.timeoutInterval = 20
 
         return AF.download(request)
-            .downloadProgress { [weak self] progress in
-                guard let self = self else {
-                    return
-                }
-                self.progressCallback?(progress.fractionCompleted, self.iterator, self.total)
-            }
             .publishData()
             .map { [weak self] response in
                 self?.iterator += 1
@@ -60,9 +54,9 @@ public final class SyncImagesLoader {
             .compactMap { $0 }
             .compactMap { UIImage(data: $0) }
             .map { [weak self] image in
+                self?.progressCallback?(self?.iterator ?? 1, self?.total ?? 1)
                 self?.cacheFunction?(image, resource.key)
                 return true
-//                return CacheImageSyncResponse(request: resource, image: image)
             }
             .replaceError(with: false)
             .eraseToAnyPublisher()
@@ -73,7 +67,34 @@ public final class SyncImagesLoader {
         total = resources.count
         return Publishers.Sequence(sequence: resources.map(fetchImage(resource:)))
             .flatMap(maxPublishers: .max(1)) { $0 }
-            .map { $0 != nil }
             .eraseToAnyPublisher()
+    }
+
+    @available(iOS 15.0.0, *)
+    public func loadImage(resource: CacheImageSyncRequest) async throws -> UIImage? {
+        var request = URLRequest(url: resource.url)
+        request.timeoutInterval = 20
+        request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+        let imageData = try await URLSession.shared.data(for: request).0
+        return UIImage(data: imageData)
+    }
+
+    public func unsafeLoadImage(resource: CacheImageSyncRequest) -> UIImage? {
+        let dispatchGroup = DispatchGroup()
+        var request = URLRequest(url: resource.url)
+        request.timeoutInterval = 20
+        request.cachePolicy = .reloadIgnoringLocalAndRemoteCacheData
+        var result: UIImage?
+        dispatchGroup.enter()
+        URLSession.shared.dataTask(with: request, completionHandler: { data, _, error in
+            if let data = data {
+                result = UIImage(data: data)
+            } else {
+                result = nil
+            }
+            dispatchGroup.leave()
+        }).resume()
+        _ = dispatchGroup.wait(timeout: .now() + 21)
+        return result
     }
 }

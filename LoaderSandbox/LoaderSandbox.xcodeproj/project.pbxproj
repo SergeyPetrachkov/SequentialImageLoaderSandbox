@@ -14,6 +14,7 @@
 		3991AE1D2759152100CACDBD /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3991AE1C2759152100CACDBD /* Assets.xcassets */; };
 		3991AE202759152100CACDBD /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3991AE1E2759152100CACDBD /* LaunchScreen.storyboard */; };
 		3991AE2A2759176C00CACDBD /* ImagesLoaderSandbox in Frameworks */ = {isa = PBXBuildFile; productRef = 3991AE292759176C00CACDBD /* ImagesLoaderSandbox */; };
+		39F50D9A275A178900D38E87 /* LoaderVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39F50D99275A178900D38E87 /* LoaderVC.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,7 @@
 		3991AE1F2759152100CACDBD /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3991AE212759152100CACDBD /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		3991AE272759153600CACDBD /* ImagesLoaderSandbox */ = {isa = PBXFileReference; lastKnownFileType = folder; name = ImagesLoaderSandbox; path = ../ImagesLoaderSandbox; sourceTree = "<group>"; };
+		39F50D99275A178900D38E87 /* LoaderVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoaderVC.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -64,6 +66,7 @@
 				3991AE132759152100CACDBD /* AppDelegate.swift */,
 				3991AE152759152100CACDBD /* SceneDelegate.swift */,
 				3991AE172759152100CACDBD /* ViewController.swift */,
+				39F50D99275A178900D38E87 /* LoaderVC.swift */,
 				3991AE192759152100CACDBD /* Main.storyboard */,
 				3991AE1C2759152100CACDBD /* Assets.xcassets */,
 				3991AE1E2759152100CACDBD /* LaunchScreen.storyboard */,
@@ -154,6 +157,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3991AE182759152100CACDBD /* ViewController.swift in Sources */,
+				39F50D9A275A178900D38E87 /* LoaderVC.swift in Sources */,
 				3991AE142759152100CACDBD /* AppDelegate.swift in Sources */,
 				3991AE162759152100CACDBD /* SceneDelegate.swift in Sources */,
 			);
