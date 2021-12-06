@@ -757,16 +757,12 @@ final class LoaderVC: UIViewController {
 
     @objc
     private func combineLoad() {
-        loader.progressCallback = { [weak self] current, total in
-            DispatchQueue.main.async {
-                self?.label.text = "Loading \(current) of \(total)"
-            }
-        }
-        loader.cacheFunction = { image, key in
-            print("cache \(image) with \(key)")
-        }
         loader
-            .fetchImages(resources: images)
+            .fetchImages(resources: images, progressCallback: { [weak self] current, total in
+                DispatchQueue.main.async {
+                    self?.label.text = "Loading \(current) of \(total)"
+                }
+            })
             .sink(receiveCompletion: { [weak self] _ in
                 print("It's over")
                 DispatchQueue.main.async {
